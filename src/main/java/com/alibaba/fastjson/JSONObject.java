@@ -118,6 +118,10 @@ public class JSONObject extends JSON implements Map<String, Object>, Cloneable, 
                 val = map.get(key.toString());
             }
         }
+        if(val == null) {
+            //如此可以方便的获取多层结构下的值，如：json.getJSONObject("$.sys.key")
+            val = JSONPath.eval(map,key.toString());
+        }
 
         return val;
     }
@@ -351,6 +355,16 @@ public class JSONObject extends JSON implements Map<String, Object>, Cloneable, 
 
     public Object put(String key, Object value) {
         return map.put(key, value);
+    }
+
+    /**
+     * 通过JSONPath进行进行多层值设置
+     * @param path 路径
+     * @param value 值
+     * @return 设置结果
+     */
+    public boolean set(String path, Object value){
+        return JSONPath.set(map,path,value);
     }
 
     public JSONObject fluentPut(String key, Object value) {
