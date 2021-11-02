@@ -118,7 +118,7 @@ public class JSONObject extends JSON implements Map<String, Object>, Cloneable, 
                 val = map.get(key.toString());
             }
         }
-        if(val == null) {
+        if(val == null&& key.toString().startsWith("$.")) {
             //如此可以方便的获取多层结构下的值，如：json.getJSONObject("$.sys.key")
             val = JSONPath.eval(map,key.toString());
         }
