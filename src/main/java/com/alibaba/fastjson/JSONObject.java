@@ -127,7 +127,7 @@ public class JSONObject extends JSON implements Map<String, Object>, Cloneable, 
     }
 
     public JSONObject getJSONObject(String key) {
-        Object value = map.get(key);
+        Object value = get(key);
 
         if (value instanceof JSONObject) {
             return (JSONObject) value;
@@ -145,7 +145,7 @@ public class JSONObject extends JSON implements Map<String, Object>, Cloneable, 
     }
 
     public JSONArray getJSONArray(String key) {
-        Object value = map.get(key);
+        Object value = get(key);
 
         if (value instanceof JSONArray) {
             return (JSONArray) value;
@@ -163,17 +163,17 @@ public class JSONObject extends JSON implements Map<String, Object>, Cloneable, 
     }
 
     public <T> T getObject(String key, Class<T> clazz) {
-        Object obj = map.get(key);
+        Object obj = get(key);
         return TypeUtils.castToJavaBean(obj, clazz);
     }
 
     public <T> T getObject(String key, Type type) {
-        Object obj = map.get(key);
+        Object obj = get(key);
         return TypeUtils.cast(obj, type, ParserConfig.getGlobalInstance());
     }
 
     public <T> T getObject(String key, TypeReference typeReference) {
-        Object obj = map.get(key);
+        Object obj = get(key);
         if (typeReference == null) {
             return (T) obj;
         }
