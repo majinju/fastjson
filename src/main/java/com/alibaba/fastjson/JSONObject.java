@@ -89,17 +89,17 @@ public class JSONObject extends JSON implements Map<String, Object>, Cloneable, 
     }
 
     public boolean containsKey(Object key) {
-        boolean result = map.containsKey(key);
-        if (!result) {
+        Object result = get(key);
+        if (result==null) {
             if (key instanceof Number
                     || key instanceof Character
                     || key instanceof Boolean
                     || key instanceof UUID
             ) {
-                result = map.containsKey(key.toString());
+                result = get(key.toString());
             }
         }
-        return result;
+        return result!=null;
     }
 
     public boolean containsValue(Object value) {
@@ -391,11 +391,15 @@ public class JSONObject extends JSON implements Map<String, Object>, Cloneable, 
     }
 
     public Object remove(Object key) {
-        return map.remove(key);
+        Object val = map.remove(key);
+        if(val==null && key!=null && key.toString().startsWith("$.")) {
+            val = JSONPath.remove(map,key.toString());
+        }
+        return val;
     }
 
     public JSONObject fluentRemove(Object key) {
-        map.remove(key);
+        remove(key);
         return this;
     }
 
