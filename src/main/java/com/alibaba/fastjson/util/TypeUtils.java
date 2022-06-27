@@ -38,7 +38,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.security.AccessControlException;
 import java.sql.Clob;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -1916,7 +1915,12 @@ public class TypeUtils {
         String[] paramNames = null;
         short[] paramNameMapping = null;
         Method[] methods = clazz.getMethods();
-        Arrays.sort(methods, new MethodInheritanceComparator());
+        try {
+            Arrays.sort(methods, new MethodInheritanceComparator());
+        } catch (Throwable ignored) {
+
+        }
+
         for (Method method : methods) {
             String methodName = method.getName();
             int ordinal = 0, serialzeFeatures = 0, parserFeatures = 0;
@@ -2548,7 +2552,7 @@ public class TypeUtils {
         }
         try {
             obj.setAccessible(true);
-        } catch (AccessControlException error) {
+        } catch (Throwable error) {
             setAccessibleEnable = false;
         }
     }
@@ -3428,14 +3432,22 @@ public class TypeUtils {
 
     public static class MethodInheritanceComparator implements Comparator<Method> {
         public int compare(Method m1, Method m2) {
+            int cmp = m1.getName().compareTo(m2.getName());
+            if (cmp != 0) {
+                return cmp;
+            }
+
             Class<?> class1 = m1.getReturnType();
             Class<?> class2 = m2.getReturnType();
+
             if (class1.equals(class2)) {
                 return 0;
             }
+
             if (class1.isAssignableFrom(class2)) {
                 return -1;
             }
+            
             if (class2.isAssignableFrom(class1)) {
                 return 1;
             }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.parser.DefaultJSONParser;
 import com.alibaba.fastjson.parser.Feature;
@@ -169,7 +170,7 @@ public class ArrayListTypeFieldDeserializer extends FieldDeserializer {
 
             lexer.nextToken(itemFastMatchToken);
 
-            for (int i = 0;; ++i) {
+            for (int i = 0; ; ++i) {
                 if (lexer.isEnabled(Feature.AllowArbitraryCommas)) {
                     while (lexer.token() == JSONToken.COMMA) {
                         lexer.nextToken();
@@ -193,6 +194,11 @@ public class ArrayListTypeFieldDeserializer extends FieldDeserializer {
             }
 
             lexer.nextToken(JSONToken.COMMA);
+        } else if (token == JSONToken.LITERAL_STRING && fieldInfo.unwrapped) {
+            String str = lexer.stringVal();
+            lexer.nextToken();
+            DefaultJSONParser valueParser = new DefaultJSONParser(str);
+            valueParser.parseArray(array);
         } else {
             if (itemTypeDeser == null) {
                 itemTypeDeser = deserializer = parser.getConfig().getDeserializer(itemType);

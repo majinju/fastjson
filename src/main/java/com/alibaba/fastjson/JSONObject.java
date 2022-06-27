@@ -126,6 +126,11 @@ public class JSONObject extends JSON implements Map<String, Object>, Cloneable, 
         return val;
     }
 
+    public Object getOrDefault(Object key, Object defaultValue) {
+        Object v;
+        return ((v = get(key)) != null) ? v : defaultValue;
+    }
+
     public JSONObject getJSONObject(String key) {
         Object value = get(key);
 
