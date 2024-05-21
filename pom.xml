@@ -2,21 +2,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.alibaba</groupId>
+    <groupId>cn.benma666</groupId>
     <artifactId>fastjson</artifactId>
     <version>1.2.83</version>
 
     <packaging>jar</packaging>
     <name>fastjson</name>
-    <description>Fastjson is a JSON processor (JSON parser + JSON generator) written in Java</description>
+    <description>Fastjson is a JSON processor (JSON parser + JSON generator) written in Java, majinju定制版</description>
 
     <url>https://github.com/alibaba/fastjson</url>
     <inceptionYear>2012</inceptionYear>
 
     <properties>
         <junit.version>4.13.1</junit.version>
-        <gpg.skip>true</gpg.skip>
-        <javadoc.skip>true</javadoc.skip>
+        <gpg.skip>false</gpg.skip>
+        <javadoc.skip>false</javadoc.skip>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.8</jdk.version>
     </properties>
@@ -187,6 +187,69 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <!--注意,此id必须与setting.xml中指定的一致,不要自作聪明改它名字 releases  snapshots-->
+            <id>releases</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                        <includes>
+                            <include>**</include>
+                        </includes>
+                    </resource>
+                    <resource>
+                        <directory>src/test/resources</directory>
+                        <excludes>
+                            <exclude>**</exclude>
+                        </excludes>
+                    </resource>
+                </resources>
+                <!--发布到中央SNAPSHOT仓库插件-->
+                <plugins>
+<!--                    <plugin>-->
+<!--                        <groupId>org.sonatype.plugins</groupId>-->
+<!--                        <artifactId>nexus-staging-maven-plugin</artifactId>-->
+<!--                        <version>1.6.7</version>-->
+<!--                        <extensions>true</extensions>-->
+<!--                        <configuration>-->
+<!--                            <serverId>snapshots</serverId>-->
+<!--                            <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>-->
+<!--                            <autoReleaseAfterClose>true</autoReleaseAfterClose>-->
+<!--                        </configuration>-->
+<!--                    </plugin>-->
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <version>2.5.3</version>
+                        <configuration>
+                            <autoVersionSubmodules>true</autoVersionSubmodules>
+                            <useReleaseProfile>false</useReleaseProfile>
+                            <releaseProfiles>release</releaseProfiles>
+                            <goals>deploy</goals>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+
+            <distributionManagement>
+                <snapshotRepository>
+                    <!--注意,此id必须与setting.xml中指定的一致  releases  snapshots-->
+                    <id>releases</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+                <repository>
+                    <id>releases</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+    </profiles>
 
     <dependencies>
         <dependency>
